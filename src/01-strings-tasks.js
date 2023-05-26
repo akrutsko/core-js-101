@@ -238,17 +238,19 @@ function encodeToRot13(str) {
     .map((letter) => {
       const charCode = letter.charCodeAt();
 
-      const upperA = 'A'.charCodeAt()
-      const upperZ = 'Z'.charCodeAt()
-      const lowerA = 'a'.charCodeAt()
-      const lowerZ = 'z'.charCodeAt()
+      const upperA = 'A'.charCodeAt();
+      const upperZ = 'Z'.charCodeAt();
+      const lowerA = 'a'.charCodeAt();
+      const lowerZ = 'z'.charCodeAt();
 
       if (charCode >= upperA && charCode <= upperZ) {
-        return String.fromCharCode(upperA + (charCode - upperA + 13) % 26);
+        const shift = (charCode - upperA + 13) % 26;
+        return String.fromCharCode(upperA + shift);
       }
 
       if (charCode >= lowerA && charCode <= lowerZ) {
-        return String.fromCharCode(lowerA + (charCode - lowerA + 13) % 26);
+        const shift = (charCode - lowerA + 13) % 26;
+        return String.fromCharCode(lowerA + shift);
       }
 
       return letter;
@@ -300,10 +302,10 @@ function isString(value) {
  */
 function getCardId(value) {
   const cards = [
-    'A♣','2♣','3♣','4♣','5♣','6♣','7♣','8♣','9♣','10♣','J♣','Q♣','K♣',
-    'A♦','2♦','3♦','4♦','5♦','6♦','7♦','8♦','9♦','10♦','J♦','Q♦','K♦',
-    'A♥','2♥','3♥','4♥','5♥','6♥','7♥','8♥','9♥','10♥','J♥','Q♥','K♥',
-    'A♠','2♠','3♠','4♠','5♠','6♠','7♠','8♠','9♠','10♠','J♠','Q♠','K♠',
+    'A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣',
+    'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
+    'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥',
+    'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠',
   ];
 
   return cards.indexOf(value);
