@@ -118,7 +118,7 @@ class Selector {
     cssClass,
     cssAttribute,
     cssPseudoClass,
-    cssPseudoElement
+    cssPseudoElement,
   ) {
     this.cssElement = cssElement || '';
     this.cssId = cssId || '';
@@ -131,18 +131,18 @@ class Selector {
   element(value) {
     if (this.cssElement) {
       throw new Error(
-        'Element, id and pseudo-element should not occur more then one time inside the selector'
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
       );
     }
     if (
-      this.cssId ||
-      this.cssClass ||
-      this.cssAttribute ||
-      this.cssPseudoClass ||
-      this.cssPseudoElement
+      this.cssId
+      || this.cssClass
+      || this.cssAttribute
+      || this.cssPseudoClass
+      || this.cssPseudoElement
     ) {
       throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
     return new Selector(
@@ -151,24 +151,24 @@ class Selector {
       this.cssClass,
       this.cssAttribute,
       this.cssPseudoClass,
-      this.cssPseudoElement
+      this.cssPseudoElement,
     );
   }
 
   id(value) {
     if (this.cssId) {
       throw new Error(
-        'Element, id and pseudo-element should not occur more then one time inside the selector'
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
       );
     }
     if (
-      this.cssClass ||
-      this.cssAttribute ||
-      this.cssPseudoClass ||
-      this.cssPseudoElement
+      this.cssClass
+      || this.cssAttribute
+      || this.cssPseudoClass
+      || this.cssPseudoElement
     ) {
       throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
     return new Selector(
@@ -177,14 +177,14 @@ class Selector {
       this.cssClass,
       this.cssAttribute,
       this.cssPseudoClass,
-      this.cssPseudoElement
+      this.cssPseudoElement,
     );
   }
 
   class(value) {
     if (this.cssAttribute || this.cssPseudoClass || this.cssPseudoElement) {
       throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
     return new Selector(
@@ -193,14 +193,14 @@ class Selector {
       this.cssClass ? `${this.cssClass}.${value}` : value,
       this.cssAttribute,
       this.cssPseudoClass,
-      this.cssPseudoElement
+      this.cssPseudoElement,
     );
   }
 
   attr(value) {
     if (this.cssPseudoClass || this.cssPseudoElement) {
       throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
     return new Selector(
@@ -209,14 +209,14 @@ class Selector {
       this.cssClass,
       value,
       this.cssPseudoClass,
-      this.cssPseudoElement
+      this.cssPseudoElement,
     );
   }
 
   pseudoClass(value) {
     if (this.cssPseudoElement) {
       throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
     return new Selector(
@@ -225,14 +225,14 @@ class Selector {
       this.cssClass,
       this.cssAttribute,
       this.cssPseudoClass ? `${this.cssPseudoClass}:${value}` : value,
-      this.cssPseudoElement
+      this.cssPseudoElement,
     );
   }
 
   pseudoElement(value) {
     if (this.cssPseudoElement) {
       throw new Error(
-        'Element, id and pseudo-element should not occur more then one time inside the selector'
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
       );
     }
     return new Selector(
@@ -241,13 +241,18 @@ class Selector {
       this.cssClass,
       this.cssAttribute,
       this.cssPseudoClass,
-      value
+      value,
     );
   }
 
   combine(selector1, combinator, selector2) {
     return new Selector(
-      `${selector1.stringify()} ${combinator} ${selector2.stringify()}`
+      `${selector1.stringify()} ${combinator} ${selector2.stringify()}`,
+      this.cssId,
+      this.cssClass,
+      this.cssAttribute,
+      this.cssPseudoClass,
+      this.cssPseudoElement,
     );
   }
 
