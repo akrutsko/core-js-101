@@ -111,21 +111,14 @@ function fromJSON(proto, json) {
  *
  *  For more examples see unit tests.
  */
-class Selector {
-  constructor(
-    cssElement,
-    cssId,
-    cssClass,
-    cssAttribute,
-    cssPseudoClass,
-    cssPseudoElement,
-  ) {
-    this.cssElement = cssElement || '';
-    this.cssId = cssId || '';
-    this.cssClass = cssClass || '';
-    this.cssAttribute = cssAttribute || '';
-    this.cssPseudoClass = cssPseudoClass || '';
-    this.cssPseudoElement = cssPseudoElement || '';
+class CssBuilder {
+  constructor() {
+    this.cssElement = '';
+    this.cssId = '';
+    this.cssClass = '';
+    this.cssAttribute = '';
+    this.cssPseudoClass = '';
+    this.cssPseudoElement = '';
   }
 
   element(value) {
@@ -145,14 +138,9 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    return new Selector(
-      value,
-      this.cssId,
-      this.cssClass,
-      this.cssAttribute,
-      this.cssPseudoClass,
-      this.cssPseudoElement,
-    );
+
+    this.cssElement = value;
+    return this;
   }
 
   id(value) {
@@ -171,14 +159,8 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    return new Selector(
-      this.cssElement,
-      value,
-      this.cssClass,
-      this.cssAttribute,
-      this.cssPseudoClass,
-      this.cssPseudoElement,
-    );
+    this.cssId = `#${value}`;
+    return this;
   }
 
   class(value) {
@@ -187,14 +169,8 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    return new Selector(
-      this.cssElement,
-      this.cssId,
-      this.cssClass ? `${this.cssClass}.${value}` : value,
-      this.cssAttribute,
-      this.cssPseudoClass,
-      this.cssPseudoElement,
-    );
+    this.cssClass = this.cssClass ? `${this.cssClass}.${value}` : `.${value}`;
+    return this;
   }
 
   attr(value) {
@@ -203,14 +179,8 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    return new Selector(
-      this.cssElement,
-      this.cssId,
-      this.cssClass,
-      value,
-      this.cssPseudoClass,
-      this.cssPseudoElement,
-    );
+    this.cssAttribute = `[${value}]`;
+    return this;
   }
 
   pseudoClass(value) {
@@ -219,14 +189,10 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    return new Selector(
-      this.cssElement,
-      this.cssId,
-      this.cssClass,
-      this.cssAttribute,
-      this.cssPseudoClass ? `${this.cssPseudoClass}:${value}` : value,
-      this.cssPseudoElement,
-    );
+    this.cssPseudoClass = this.cssPseudoClass
+      ? `${this.cssPseudoClass}:${value}`
+      : `:${value}`;
+    return this;
   }
 
   pseudoElement(value) {
@@ -235,42 +201,42 @@ class Selector {
         'Element, id and pseudo-element should not occur more then one time inside the selector',
       );
     }
-    return new Selector(
-      this.cssElement,
-      this.cssId,
-      this.cssClass,
-      this.cssAttribute,
-      this.cssPseudoClass,
-      value,
-    );
-  }
-
-  combine(selector1, combinator, selector2) {
-    return new Selector(
-      `${selector1.stringify()} ${combinator} ${selector2.stringify()}`,
-      this.cssId,
-      this.cssClass,
-      this.cssAttribute,
-      this.cssPseudoClass,
-      this.cssPseudoElement,
-    );
+    this.cssPseudoElement = `::${value}`;
+    return this;
   }
 
   stringify() {
-    const cssElement = this.cssElement || '';
-    const cssId = this.cssId ? `#${this.cssId}` : '';
-    const cssClass = this.cssClass ? `.${this.cssClass}` : '';
-    const cssAttribute = this.cssAttribute ? `[${this.cssAttribute}]` : '';
-    const cssPseudoClass = this.cssPseudoClass ? `:${this.cssPseudoClass}` : '';
-    const cssPseudoElement = this.cssPseudoElement
-      ? `::${this.cssPseudoElement}`
-      : '';
-
-    return `${cssElement}${cssId}${cssClass}${cssAttribute}${cssPseudoClass}${cssPseudoElement}`;
+    return `${this.cssElement}${this.cssId}${this.cssClass}${this.cssAttribute}${this.cssPseudoClass}${this.cssPseudoElement}`;
   }
 }
 
-const cssSelectorBuilder = new Selector();
+const cssSelectorBuilder = {
+  element(value) {
+    return new CssBuilder().element(value);
+  },
+  id(value) {
+    return new CssBuilder().id(value);
+  },
+  class(value) {
+    return new CssBuilder().class(value);
+  },
+  attr(value) {
+    return new CssBuilder().attr(value);
+  },
+  pseudoClass(value) {
+    return new CssBuilder().pseudoClass(value);
+  },
+  pseudoElement(value) {
+    return new CssBuilder().pseudoElement(value);
+  },
+  combine(selector1, combinator, selector2) {
+    return {
+      stringify() {
+        return `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+      },
+    };
+  },
+};
 
 module.exports = {
   Rectangle,
